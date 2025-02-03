@@ -1,0 +1,34 @@
+when:
+  instance: ci.kokuwa.io
+  repo: woodpecker/shellcheck
+  event: [manual, push, pull_request]
+  branch: main
+  path: [.woodpecker/build.yaml, Dockerfile, Dockerfile.dockerignore, entrypoint.sh]
+
+depends_on: [build]
+matrix:
+  PLATFORM: [amd64, arm64]
+labels:
+  platform: linux/${PLATFORM}
+
+steps:
+
+  pr:
+    image: registry.kokuwa.io/kokuwaio/shellcheck:ci-${CI_PIPELINE_NUMBER}
+    when:
+      event: pull_request
+
+  kokuwa.io: &version
+    image: registry.kokuwa.io/kokuwaio/shellcheck
+    pull: true
+    when:
+      event: [manual, push]
+      branch: main
+
+  docker.io:
+    image: docker.io/kokuwaio/shellcheck
+    <<: *version
+
+  ghcr.io:
+    image: ghcr.io/kokuwaio/shellcheck
+    <<: *version

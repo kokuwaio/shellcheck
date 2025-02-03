@@ -1,0 +1,17 @@
+when:
+  instance: ci.kokuwa.io
+  repo: woodpecker/shellcheck
+  event: [manual, push]
+  branch: main
+  path: [.woodpecker/dockerhub.yaml, README.md]
+
+steps:
+
+  metadata:
+    image: kokuwaio/dockerhub-metadata
+    settings:
+      repository: kokuwaio/shellcheck
+      description-short: A WoodpeckerCI plugin for shellcheck to lint shell files.
+      categories: [developer-tools, integration-and-delivery]
+      username: {from_secret: dockerhub_username}
+      password: {from_secret: dockerhub_password}
