@@ -1,0 +1,46 @@
+{
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"labels": ["renovate", "renovate-manager/{{{manager}}}", "renovate-type/{{{updateType}}}"],
+	"assignees": ["renovate"],
+	"reviewers": ["stephan"],
+	"dependencyDashboard": true,
+	"dependencyDashboardLabels": ["renovate"],
+	"dependencyDashboardApproval": true,
+	"dependencyDashboardOSVVulnerabilitySummary": "all",
+	"separateMajorMinor": true,
+	"separateMinorPatch": true,
+	"separateMultipleMinor": true,
+	"separateMultipleMajor": true,
+	"enabledManagers": ["dockerfile", "custom.regex", "woodpecker"],
+	"pinDigests": true,
+	"automerge": false,
+	"rebaseWhen": "behind-base-branch",
+	"packageRules": [
+		{
+			"matchUpdateTypes": ["digest"],
+			"dependencyDashboardApproval": false,
+			"automergeType": "branch"
+		},{
+			"matchUpdateTypes": ["patch"],
+			"dependencyDashboardApproval": false,
+			"automerge": true
+		},{
+			"matchUpdateTypes": ["minor"],
+			"dependencyDashboardApproval": false
+		},{
+			"matchManagers": ["woodpecker"],
+			"pinDigests": false
+		}
+	],
+	"customManagers": [
+		{
+			"customType": "regex",
+			"fileMatch": ["Dockerfile$"],
+			"matchStrings": ["ARG [A-Z0-9_]+_VERSION=(?<currentValue>.*) # (?<datasource>.*) (?<depName>.*)"]
+		},{
+			"customType": "regex",
+			"fileMatch": ["build.yaml$"],
+			"matchStrings": ["[A-Z0-9_]+_VERSION: (?<currentValue>.*) # (?<datasource>.*) (?<depName>.*)"]
+		}
+	]
+}

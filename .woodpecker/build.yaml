@@ -1,0 +1,42 @@
+when:
+  event: [cron, manual, push, pull_request]
+  branch: main
+  path: [.woodpecker/*.yaml, Dockerfile, Dockerfile.dockerignore, entrypoint.sh]
+
+matrix:
+  PLATFORM: [amd64, arm64]
+labels:
+  platform: linux/${PLATFORM}
+
+steps:
+
+  build:
+    image: gcr.io/kaniko-project/executor:v1.23.2-debug
+    commands: /kaniko/executor
+        --context=$CI_WORKSPACE
+        --build-arg=SHELLCHECK_VERSION
+        --destination=ci-registry.schnabel.org/kokuwaio/shellcheck:$CI_PIPELINE_NUMBER-$PLATFORM
+        --reproducible
+        --cache
+        --cache-copy-layers
+        --cache-run-layers
+        --cache-repo=$DOCKER_CACHE/cache/kokuwaio/shellcheck
+        --insecure-registry=$DOCKER_CACHE
+        --insecure-registry=$DOCKER_MIRROR
+        --registry-mirror=$DOCKER_MIRROR
+        --skip-default-registry-fallback
+        --label=org.opencontainers.image.title="Shellcheck Plugin"
+        --label=org.opencontainers.image.description="Woodpecker plugin for Shellcheck."
+        --label=org.opencontainers.image.url=$CI_REPO_URL
+        --label=org.opencontainers.image.documentation=$CI_REPO_URL
+        --label=org.opencontainers.image.source=$CI_REPO_CLONE_URL
+        --label=org.opencontainers.image.vendor=kokuwa.io
+        --label=org.opencontainers.image.licenses=GPL-3.0-or-later
+        --label=org.opencontainers.image.version=$SHELLCHECK_VERSION
+        --label=org.opencontainers.image.revision=$CI_COMMIT_SHA
+    environment:
+      SHELLCHECK_VERSION: v0.10.0 # github-tags koalaman/shellcheck
+
+  test:
+    image: ci-registry.schnabel.org/kokuwaio/shellcheck:${CI_PIPELINE_NUMBER}-${PLATFORM}
+    pull: true

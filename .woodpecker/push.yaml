@@ -1,0 +1,28 @@
+when:
+  event: [cron, manual, push, pull_request]
+  branch: main
+  path: [.woodpecker/*.yaml, Dockerfile, Dockerfile.dockerignore, entrypoint.sh]
+
+depends_on: [build]
+skip_clone: true
+
+steps:
+
+  combine:
+    image: mplatform/manifest-tool:alpine-v2.1.9
+    commands: manifest-tool push from-args
+        --platforms=linux/amd64,linux/arm64
+        --template=ci-registry.schnabel.org/kokuwaio/shellcheck:$CI_PIPELINE_NUMBER-ARCH
+        --target=ci-registry.schnabel.org/kokuwaio/shellcheck:$CI_PIPELINE_NUMBER
+
+  push:
+    image: quay.io/skopeo/stable:v1.17.0
+    commands:
+      - echo "$DOCKER_CONFIG" > /tmp/auth.json
+      - skopeo copy docker://ci-registry.schnabel.org/kokuwaio/shellcheck:$CI_PIPELINE_NUMBER docker://kokuwaio/shellcheck --all
+    environment:
+      DOCKER_CONFIG: {from_secret: DOCKER_CONFIG}
+    when:
+      event: push
+      instance: ci.schnabel.org
+      repo: kokuwaio/shellcheck

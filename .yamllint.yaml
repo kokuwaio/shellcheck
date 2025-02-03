@@ -1,0 +1,23 @@
+extends: default
+
+## see https://yamllint.readthedocs.io/en/stable/rules.html
+rules:
+
+  # no need for document start
+  document-start: disable
+
+  # line length is not important
+  line-length: disable
+
+  # reduce space from 2
+  comments:
+    min-spaces-from-content: 1
+
+  # force double quotes everywhere
+  quoted-strings:
+    quote-type: double
+    required: only-when-needed
+
+  # allow everything on keys
+  truthy:
+    check-keys: false
