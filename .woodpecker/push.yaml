@@ -1,0 +1,39 @@
+when:
+  instance: ci.schnabel.org
+  repo: kokuwaio/shellcheck
+  event: push
+  branch: main
+  path: [.woodpecker/build.yaml, .woodpecker/push.yaml, Dockerfile, Dockerfile.dockerignore, entrypoint.sh]
+
+depends_on: [build]
+skip_clone: true
+
+steps:
+
+  manifest:
+    image: mplatform/manifest-tool:alpine-v2.1.9
+    commands: manifest-tool push from-args
+        --platforms=linux/amd64,linux/arm64
+        --template=ci-registry.schnabel.org/kokuwaio/shellcheck:$CI_PIPELINE_NUMBER-ARCH
+        --target=ci-registry.schnabel.org/kokuwaio/shellcheck:$CI_PIPELINE_NUMBER
+
+  docker.io: &push
+    image: quay.io/skopeo/stable:v1.17.0
+    depends_on: [manifest]
+    commands:
+      - echo "$AUTH" > /tmp/auth.json
+      - skopeo copy --all --preserve-digests --dest-precompute-digests
+          docker://ci-registry.schnabel.org/kokuwaio/shellcheck:$CI_PIPELINE_NUMBER
+          docker://$URL/kokuwaio/shellcheck:v0.10.0
+      - skopeo copy --all --preserve-digests --dest-precompute-digests
+          docker://ci-registry.schnabel.org/kokuwaio/shellcheck:$CI_PIPELINE_NUMBER
+          docker://$URL/kokuwaio/shellcheck:latest
+    environment:
+      URL: docker.io
+      AUTH: {from_secret: DOCKER_IO_AUTH}
+
+  ghcr.io:
+    <<: *push
+    environment:
+      URL: ghcr.io
+      AUTH: {from_secret: GHCR_IO_AUTH}

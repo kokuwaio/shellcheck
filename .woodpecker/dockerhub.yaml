@@ -1,0 +1,17 @@
+when:
+  instance: ci.schnabel.org
+  repo: kokuwaio/shellcheck
+  event: push
+  branch: main
+  path: README.md
+
+steps:
+
+  metadata:
+    image: kokuwaio/dockerhub-metadata
+    settings:
+      repository: kokuwaio/shellcheck
+      description-short: A Woodpecker CI plugin for Renovate configuration validation.
+      categories: [developer-tools, integration-and-delivery]
+      username: {from_secret: DOCKERHUB_USERNAME}
+      password: {from_secret: DOCKERHUB_PASSWORD}

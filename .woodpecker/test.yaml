@@ -1,0 +1,18 @@
+when:
+  instance: ci.schnabel.org
+  repo: kokuwaio/shellcheck
+  event: push
+  branch: main
+  path: [.woodpecker/build.yaml, .woodpecker/push.yaml, .woodpecker/test.yaml, Dockerfile, Dockerfile.dockerignore, entrypoint.sh]
+
+depends_on: [push]
+matrix:
+  PLATFORM: [amd64, arm64]
+labels:
+  platform: linux/${PLATFORM}
+
+steps:
+
+  test:
+    image: kokuwaio/shellcheck
+    pull: true

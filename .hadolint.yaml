@@ -1,0 +1,7 @@
+# https://github.com/hadolint/hadolint#configure
+failure-threshold: style
+strict-labels: true
+disable-ignore-pragma: true
+ignored:
+  - DL3008  # Pin versions in apt get install. Instead of `apt-get install <package>` use `apt-get install <package>=<version>`
+trustedRegistries: [docker.io]
