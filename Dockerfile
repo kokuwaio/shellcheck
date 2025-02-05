@@ -12,7 +12,7 @@ RUN --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
 # https://github.com/koalaman/shellcheck/tags
 # https://github.com/koalaman/shellcheck/issues/2137 - Request to Add Checksums to Releases
 
-ARG SHELLCHECK_VERSION=v0.10.0 # github-tags koalaman/shellcheck
+ARG SHELLCHECK_VERSION=v0.9.0
 RUN ARCH=$(dpkg --print-architecture) && \
 	[[ $ARCH == amd64 ]] && export SUFFIX=x86_64; \
 	[[ $ARCH == arm64 ]] && export SUFFIX=aarch64; \

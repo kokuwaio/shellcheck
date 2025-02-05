@@ -1,28 +1,39 @@
 when:
-  event: [cron, manual, push, pull_request]
+  instance: ci.schnabel.org
+  repo: kokuwaio/shellcheck
+  event: push
   branch: main
-  path: [.woodpecker/*.yaml, Dockerfile, Dockerfile.dockerignore, entrypoint.sh]
+  path: [.woodpecker/build.yaml, .woodpecker/push.yaml, Dockerfile, Dockerfile.dockerignore, entrypoint.sh]
 
 depends_on: [build]
 skip_clone: true
 
 steps:
 
-  combine:
+  manifest:
     image: mplatform/manifest-tool:alpine-v2.1.9
     commands: manifest-tool push from-args
         --platforms=linux/amd64,linux/arm64
         --template=ci-registry.schnabel.org/kokuwaio/shellcheck:$CI_PIPELINE_NUMBER-ARCH
         --target=ci-registry.schnabel.org/kokuwaio/shellcheck:$CI_PIPELINE_NUMBER
 
-  push:
+  docker.io: &push
     image: quay.io/skopeo/stable:v1.17.0
+    depends_on: [manifest]
     commands:
-      - echo "$DOCKER_CONFIG" > /tmp/auth.json
-      - skopeo copy docker://ci-registry.schnabel.org/kokuwaio/shellcheck:$CI_PIPELINE_NUMBER docker://kokuwaio/shellcheck --all
+      - skopeo inspectdocker://ci-registry.schnabel.org/kokuwaio/shellcheck:$CI_PIPELINE_NUMBER
+      - skopeo copy $SOURCE_IMAGE $DEST_IMAGE:v0.9.0 --dest-username=$DEST_USERNAME --dest-password=$DEST_PASSWORD --preserve-digests --all
+      - skopeo copy $SOURCE_IMAGE $DEST_IMAGE:latest --dest-username=$DEST_USERNAME --dest-password=$DEST_PASSWORD --preserve-digests --all
     environment:
-      DOCKER_CONFIG: {from_secret: DOCKER_CONFIG}
-    when:
-      event: push
-      instance: ci.schnabel.org
-      repo: kokuwaio/shellcheck
+      SOURCE_IMAGE: 
+      DEST_IMAGE: docker://$DEST_URL/kokuwaio/shellcheck
+      DEST_URL: docker.io
+      DEST_USERNAME: {from_secret: DOCKER_IO_USERNAME}
+      DEST_PASSWORD: {from_secret: DOCKER_IO_PASSWORD}
+
+  ghcr.io:
+    <<: *push
+    environment:
+      DEST_URL: ghcr.io
+      DEST_USERNAME: {from_secret: GHCR_IO_USERNAME}
+      DEST_PASSWORD: {from_secret: GHCR_IO_PASSWORD}

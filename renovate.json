@@ -35,12 +35,14 @@
 	"customManagers": [
 		{
 			"customType": "regex",
-			"fileMatch": ["Dockerfile$"],
-			"matchStrings": ["ARG [A-Z0-9_]+_VERSION=(?<currentValue>.*) # (?<datasource>.*) (?<depName>.*)"]
-		},{
-			"customType": "regex",
-			"fileMatch": ["build.yaml$"],
-			"matchStrings": ["[A-Z0-9_]+_VERSION: (?<currentValue>.*) # (?<datasource>.*) (?<depName>.*)"]
+			"fileMatch": ["Dockerfile", ".woodpecker/build.yaml", ".woodpecker/push.yaml"],
+			"matchStrings": [
+				"org.opencontainers.image.version=(?<currentValue>v[0-9]+\\.[0-9]+\\.[0-9]+)",
+				"SHELLCHECK_VERSION=(?<currentValue>v[0-9]+\\.[0-9]+\\.[0-9]+)",
+				"DEST_IMAGE:(?<currentValue>v[0-9]+\\.[0-9]+\\.[0-9]+)"
+			],
+			"datasourceTemplate": "github-tags",
+			"packageNameTemplate": "koalaman/shellcheck"
 		}
 	]
 }
