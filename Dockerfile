@@ -25,7 +25,7 @@ RUN ARCH=$(dpkg --print-architecture) && \
 ## Final stage
 ##
 
-FROM docker.io/library/bash:5.2.37@sha256:6b7a52601cb4a02a370b394858eb609e701bf221920a259ecb5a933c6d5b3d2e
+FROM docker.io/library/bash:5.2.37@sha256:64defcbc5126c2d81122b4fb78a629a6d27068f0842c4a8302b8273415b12e30
 COPY --link --chown=0:0 --chmod=555 --from=build /usr/local/bin/shellcheck /usr/local/bin/shellcheck
 COPY --link --chown=0:0 --chmod=555 entrypoint.sh /usr/local/bin/entrypoint.sh
 ENTRYPOINT ["/usr/local/bin/bash", "/usr/local/bin/entrypoint.sh"]
