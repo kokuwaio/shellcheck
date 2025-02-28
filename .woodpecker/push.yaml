@@ -18,7 +18,7 @@ steps:
         --target=ci-registry.schnabel.org/kokuwaio/shellcheck:$CI_PIPELINE_NUMBER
 
   docker.io: &push
-    image: quay.io/skopeo/stable:v1.17.0
+    image: quay.io/skopeo/stable:v1.18.0
     depends_on: [manifest]
     commands:
       - echo "$AUTH" > /tmp/auth.json
