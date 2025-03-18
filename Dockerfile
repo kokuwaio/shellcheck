@@ -2,7 +2,7 @@
 ## Download shellcheck
 ##
 
-FROM docker.io/library/debian:12.9-slim@sha256:12c396bd585df7ec21d5679bb6a83d4878bc4415ce926c9e5ea6426d23c60bdc AS build
+FROM docker.io/library/debian:12.10-slim@sha256:1209d8fd77def86ceb6663deef7956481cc6c14a25e1e64daec12c0ceffcc19d AS build
 SHELL ["/bin/bash", "-u", "-e", "-o", "pipefail", "-c"]
 RUN --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
 	apt-get -qq update && \
