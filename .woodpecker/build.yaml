@@ -11,7 +11,7 @@ labels:
 steps:
 
   build:
-    image: gcr.io/kaniko-project/executor:v1.23.2-debug
+    image: gcr.io/kaniko-project/executor:v1.24.0-debug
     commands: /kaniko/executor
         --context=$CI_WORKSPACE
         --destination=ci-registry.schnabel.org/kokuwaio/shellcheck:$CI_PIPELINE_NUMBER-$PLATFORM
