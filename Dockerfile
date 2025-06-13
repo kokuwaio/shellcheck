@@ -10,8 +10,8 @@ RUN ARCH=$(uname -m) && \
 	[[ $ARCH == x86_64 ]] && export SUFFIX=x86_64; \
 	[[ $ARCH == aarch64 ]] && export SUFFIX=aarch64; \
 	[[ -z ${SUFFIX:-} ]] && echo "Unknown arch: $ARCH" && exit 1; \
-	wget -q "https://github.com/koalaman/shellcheck/releases/download/v0.9.0/shellcheck-v0.9.0.linux.$SUFFIX.tar.xz" --output-document=- | \
-	tar --xz --extract --to-stdout shellcheck-v0.9.0/shellcheck --strip-components=1 > /usr/local/bin/shellcheck && \
+	wget -q "https://github.com/koalaman/shellcheck/releases/download/v0.10.0/shellcheck-v0.10.0.linux.$SUFFIX.tar.xz" --output-document=- | \
+	tar --xz --extract --to-stdout shellcheck-v0.10.0/shellcheck --strip-components=1 > /usr/local/bin/shellcheck && \
 	chmod 555 /usr/local/bin/shellcheck
 
 COPY --chmod=555 entrypoint.sh /usr/local/bin/entrypoint.sh
