@@ -1,0 +1,18 @@
+{
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"extends": ["local>infrastructure/renovate-config", ":reviewer(stephan.schnabel)"],
+	"customManagers": [
+		{
+			"customType": "regex",
+			"managerFilePatterns": ["Dockerfile", ".woodpecker/build.yaml"],
+			"matchStrings": [
+				"kokuwaio/shellcheck:(?<currentValue>v[0-9]+\\.[0-9]+\\.[0-9]+)",
+				"koalaman/shellcheck/releases/download/(?<currentValue>v[0-9]+\\.[0-9]+\\.[0-9]+)",
+				"shellcheck-(?<currentValue>v[0-9]+\\.[0-9]+\\.[0-9]+)",
+				"version: (?<currentValue>v[0-9]+\\.[0-9]+\\.[0-9]+)"
+			],
+			"datasourceTemplate": "github-releases",
+			"packageNameTemplate": "koalaman/shellcheck"
+		}
+	]
+}

@@ -1,0 +1,56 @@
+when:
+  instance: ci.kokuwa.io
+  repo: woodpecker/shellcheck
+  event: [manual, push, pull_request]
+  branch: main
+  path: [.woodpecker/build.yaml, Dockerfile, Dockerfile.dockerignore, entrypoint.sh]
+
+steps:
+
+  build:
+    image: kokuwaio/buildctl
+    settings: &settings
+      name: registry.kokuwa.io/kokuwaio/shellcheck:ci-${CI_PIPELINE_NUMBER}
+      auth:
+        registry.kokuwa.io:
+          username: {from_secret: kokuwa_io_username}
+          password: {from_secret: kokuwa_io_password}
+      platform: [linux/amd64, linux/arm64]
+      annotation:
+        org.opencontainers.image.title: Shellcheck WoodpeckerCI Plugin
+        org.opencontainers.image.description: A WoodpeckerCI plugin for shellcheck to lint shell files.
+        org.opencontainers.image.url: $CI_REPO_URL
+        org.opencontainers.image.documentation: $CI_REPO_URL/README.md
+        org.opencontainers.image.source: $CI_REPO_CLONE_URL
+        org.opencontainers.image.revision: $CI_COMMIT_SHA
+        org.opencontainers.image.vendor: kokuwa.io
+        org.opencontainers.image.licenses: EUPL-1.2
+        org.opencontainers.image.ref.name: kokuwaio/shellcheck
+        org.opencontainers.image.version: v0.10.0
+    when:
+      event: pull_request
+
+  push:
+    image: kokuwaio/buildctl
+    settings:
+      <<: *settings
+      name:
+        - registry.kokuwa.io/kokuwaio/shellcheck:latest
+        - registry.kokuwa.io/kokuwaio/shellcheck:v0.10.0
+        - docker.io/kokuwaio/shellcheck:latest
+        - docker.io/kokuwaio/shellcheck:v0.10.0
+        - ghcr.io/kokuwaio/shellcheck:latest
+        - ghcr.io/kokuwaio/shellcheck:v0.10.0
+      auth:
+        "https://index.docker.io/v1/":
+          username: {from_secret: docker_io_username}
+          password: {from_secret: docker_io_password}
+        ghcr.io:
+          username: {from_secret: ghcr_io_username}
+          password: {from_secret: ghcr_io_password}
+        registry.kokuwa.io:
+          username: {from_secret: kokuwa_io_username}
+          password: {from_secret: kokuwa_io_password}
+    when:
+      event: [manual, push]
+      branch: main
