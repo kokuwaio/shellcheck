@@ -1,6 +1,6 @@
 {
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
-	"extends": ["local>infrastructure/renovate-config", ":reviewer(stephan.schnabel)"],
+	"extends": ["local>kokuwaio/renovate-config", ":reviewer(stephan.schnabel)"],
 	"customManagers": [
 		{
 			"customType": "regex",
