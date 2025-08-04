@@ -10,8 +10,8 @@ ARG TARGETARCH
 RUN [[ $TARGETARCH == amd64 ]] && export ARCH=x86_64; \
 	[[ $TARGETARCH == arm64 ]] && export ARCH=aarch64; \
 	[[ -z ${ARCH:-} ]] && echo "Unknown arch: $TARGETARCH" && exit 1; \
-	wget -q "https://github.com/koalaman/shellcheck/releases/download/v0.10.0/shellcheck-v0.10.0.linux.$ARCH.tar.xz" --output-document=- | \
-	tar --xz --extract --to-stdout shellcheck-v0.10.0/shellcheck --strip-components=1 > /usr/local/bin/shellcheck && \
+	wget -q "https://github.com/koalaman/shellcheck/releases/download/v0.11.0/shellcheck-v0.11.0.linux.$ARCH.tar.xz" --output-document=- | \
+	tar --xz --extract --to-stdout shellcheck-v0.11.0/shellcheck --strip-components=1 > /usr/local/bin/shellcheck && \
 	chmod 555 /usr/local/bin/shellcheck
 
 COPY --chmod=555 entrypoint.sh /usr/local/bin/entrypoint.sh
