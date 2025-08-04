@@ -10,17 +10,18 @@
 	docker run --rm --read-only --volume=$(pwd):$(pwd):ro --workdir=$(pwd) kokuwaio/hadolint
 	docker run --rm --read-only --volume=$(pwd):$(pwd):ro --workdir=$(pwd) kokuwaio/yamllint
 	docker run --rm --read-only --volume=$(pwd):$(pwd):rw --workdir=$(pwd) kokuwaio/markdownlint --fix
-	docker run --rm --read-only --volume=$(pwd):$(pwd):ro --workdir=$(pwd) kokuwaio/renovate
+	docker run --rm --read-only --volume=$(pwd):$(pwd):ro --workdir=$(pwd) kokuwaio/renovate-config-validator
 	docker run --rm --read-only --volume=$(pwd):$(pwd):ro --workdir=$(pwd) woodpeckerci/woodpecker-cli lint
 
 # Build image with local docker daemon.
 @build:
-	docker build . --tag=kokuwaio/shellcheck:dev --load
-
-# Inspect image with docker.
-@inspect: build
-	docker image inspect kokuwaio/shellcheck:dev
+	docker buildx build . --build-arg=NPM_CONFIG_REGISTRY --platform=linux/amd64,linux/arm64
 
 # Inspect image layers with `dive`.
-@dive: build
-	docker run --rm -it --volume=/var/run/docker.sock:/var/run/docker.sock:ro wagoodman/dive:latest kokuwaio/shellcheck:dev
+@dive TARGET="":
+	dive build . --build-arg=NPM_CONFIG_REGISTRY --target={{TARGET}}
+
+# Test created image.
+@test:
+	docker build . --tag=kokuwaio/shellcheck:dev
+	docker run --rm --read-only --volume=$(pwd):$(pwd):ro --workdir=$(pwd) kokuwaio/shellcheck:dev
