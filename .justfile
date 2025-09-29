@@ -15,13 +15,13 @@
 
 # Build image with local docker daemon.
 @build:
-	docker buildx build . --build-arg=NPM_CONFIG_REGISTRY --platform=linux/amd64,linux/arm64
+	docker buildx build . --platform=linux/amd64,linux/arm64
 
 # Inspect image layers with `dive`.
 @dive TARGET="":
-	dive build . --build-arg=NPM_CONFIG_REGISTRY --target={{TARGET}}
+	dive build . --target={{TARGET}}
 
 # Test created image.
 @test:
-	docker build . --tag=kokuwaio/shellcheck:dev
+	docker buildx build . --load --tag=kokuwaio/shellcheck:dev
 	docker run --rm --read-only --volume=$(pwd):$(pwd):ro --workdir=$(pwd) kokuwaio/shellcheck:dev

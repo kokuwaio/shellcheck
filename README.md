@@ -23,7 +23,8 @@ Woodpecker:
 ```yaml
 steps:
   shellcheck:
-    image: kokuwaio/shellcheck
+    depends_on: []
+    image: kokuwaio/shellcheck:v0.11.0
     settings:
       shell: bash
       severity: error
@@ -32,15 +33,16 @@ steps:
       path: "**/*.sh"
 ```
 
-Gitlab:
+Gitlab: (using script is needed because of <https://gitlab.com/gitlab-org/gitlab/-/issues/19717>)
 
 ```yaml
 shellcheck:
+  needs: []
   stage: lint
-  image: kokuwaio/shellcheck
-  variables:
-    PLUGIN_SHELL: bash
-    PLUGIN_SEVERITY: error
+  image:
+    name: kokuwaio/shellcheck:v0.11.0
+    entrypoint: [""]
+  script: [/usr/local/bin/entrypoint.sh]
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       changes: ["**/*.sh"]
