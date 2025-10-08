@@ -8,7 +8,7 @@ when:
 steps:
 
   build:
-    image: kokuwaio/buildctl:v0.25.0
+    image: kokuwaio/buildctl:v0.25.1
     settings: &settings
       name: registry.kokuwa.io/kokuwaio/shellcheck:ci-${CI_PIPELINE_NUMBER}
       auth:
@@ -31,7 +31,7 @@ steps:
       event: pull_request
 
   push:
-    image: kokuwaio/buildctl:v0.25.0
+    image: kokuwaio/buildctl:v0.25.1
     settings:
       <<: *settings
       name:
