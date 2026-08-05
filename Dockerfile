@@ -1,7 +1,7 @@
 # ignore pipefail because
 # bash is non-default location https://github.com/tianon/docker-bash/issues/29
 # hadolint only uses default locations https://github.com/hadolint/hadolint/issues/977
-# hadolint global ignore=DL4006
+# hadolint global ignore=DL4006,SC3010
 
 FROM docker.io/library/bash:5.3.15@sha256:a19c811ee9e97fa8a080001d82b8e0ded303f0795cffdb1cbd162731bc8ce208
 SHELL ["/usr/local/bin/bash", "-u", "-e", "-o", "pipefail", "-c"]

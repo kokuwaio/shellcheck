@@ -27,7 +27,7 @@ if [[ -n "${PLUGIN_EXCLUDE:-}" ]]; then
 	COMMAND+=" --exclude=$PLUGIN_EXCLUDE"
 fi
 
-# custom args, e.g. docker run --rm --volume=$(pwd):$(pwd) --workdir=$(pwd) --env=CI=test kokuwaio/shellcheck --format=json
+# custom args, e.g. docker run --rm --volume=$PWD:$PWD --workdir=$PWD --env=CI=test kokuwaio/shellcheck --format=json
 if [[ -n "${1:-}" ]]; then
 	COMMAND+=" $*"
 fi
@@ -36,7 +36,7 @@ fi
 ## collect files (https://www.shellcheck.net/wiki/Recursiveness)
 ##
 
-FILES=$(find "$(pwd)" -type f \
+FILES=$(find "$PWD" -type f \
 	\( -name '*.sh' \
 	-o -name '*.ksh' \
 	-o -name '*.bash' \
