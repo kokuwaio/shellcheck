@@ -3,7 +3,7 @@
 # hadolint only uses default locations https://github.com/hadolint/hadolint/issues/977
 # hadolint global ignore=DL4006,SC3010
 
-FROM docker.io/library/bash:5.3.20@sha256:17bcd6fab37baf523955fd74f1b443344456f7a0eec9deafb698db136f6f7aa0
+FROM docker.io/library/bash:5.3.20@sha256:bfa60b7f15be4be876607f1b8e19e3b5585a9c4bfdb8865a001366aa54fe675c
 SHELL ["/usr/local/bin/bash", "-u", "-e", "-o", "pipefail", "-c"]
 
 ARG TARGETARCH
